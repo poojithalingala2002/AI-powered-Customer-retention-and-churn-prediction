@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Customer Churn Prediction</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #667eea, #764ba2);
+    margin: 0; padding: 0;
+    color: #333;
+  }
+  .container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+    color: #4a47a3;
+  }
+  form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 25px;
+  }
+  label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+  select, input[type=number] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    font-size: 15px;
+  }
+  button {
+    grid-column: span 2;
+    padding: 12px;
+    background: #4a47a3;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #373462;
+  }
+  /* SIM Provider section - full width, big label + circles with big text */
+  .sim-provider-section {
+    grid-column: span 2;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  .sim-label {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #5c4d91;
+  }
+  .sim-options {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+  .sim-option {
+    cursor: pointer;
+    text-align: center;
+  }
+  .sim-option input {
+    display: none;
+  }
+  .sim-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #d1c4e9; /* Light purple */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 900;
+    color: #4a47a3;
+    margin: 0 auto 8px auto;
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  /* Highlight selected sim */
+  .sim-option input:checked + label .sim-icon {
+    background-color: #4a47a3;
+    color: white;
+  }
+  /* Responsive */
+  @media (max-width: 600px) {
+    form {
+      grid-template-columns: 1fr;
+    }
+    button {
+      grid-column: span 1;
+    }
+    .sim-options {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Customer Churn Prediction</h2>
+
+    <form method="POST" action="/predict">
+
+      <!-- SIM Provider section on top -->
+      <div class="sim-provider-section">
+        <div class="sim-label">SIM Provider</div>
+        <div class="sim-options">
+          <div class="sim-option">
+            <input type="radio" id="sim_jio" name="SIM_Provider" value="Jio" required />
+            <label for="sim_jio">
+              <div class="sim-icon">JIO</div>
+            </label>
+          </div>
+          <div class="sim-option">
+            <input type="radio" id="sim_airtel" name="SIM_Provider" value="Airtel" />
+            <label for="sim_airtel">
+              <div class="sim-icon">AIRTEL</div>
+            </label>
+          </div>
+          <div class="sim-option">
+            <input type="radio" id="sim_bsnl" name="SIM_Provider" value="BSNL" />
+            <label for="sim_bsnl">
+              <div class="sim-icon">BSNL</div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other fields below -->
+      <div>
+        <label for="gender">Gender</label>
+        <select name="gender" id="gender" required>
+          <option disabled selected>Select</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="SeniorCitizen">Senior Citizen</label>
+        <select name="SeniorCitizen" id="SeniorCitizen" required>
+          <option disabled selected>Select</option>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="Partner">Partner</label>
+        <select name="Partner" id="Partner" required>
+          <option disabled selected>Select</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="Dependents">Dependents</label>
+        <select name="Dependents" id="Dependents" required>
+          <option disabled selected>Select</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="tenure">Tenure (Months)</label>
+        <input type="number" name="tenure" id="tenure" min="0" required />
+      </div>
+
+      <div>
+        <label for="PhoneService">Phone Service</label>
+        <select name="PhoneService" id="PhoneService" required>
+          <option disabled selected>Select</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="MultipleLines">Multiple Lines</label>
+        <select name="MultipleLines" id="MultipleLines" required>
+          <option disabled selected>Select</option>
+          <option>No phone service</option>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="InternetService">Internet Service</label>
+        <select name="InternetService" id="InternetService" required>
+          <option disabled selected>Select</option>
+          <option>DSL</option>
+          <option>Fiber optic</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="OnlineSecurity">Online Security</label>
+        <select name="OnlineSecurity" id="OnlineSecurity" required>
+          <option disabled selected>Select</option>
+          <option>No internet service</option>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="OnlineBackup">Online Backup</label>
+        <select name="OnlineBackup" id="OnlineBackup" required>
+          <option disabled selected>Select</option>
+          <option>No internet service</option>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="DeviceProtection">Device Protection</label>
+        <select name="DeviceProtection" id="DeviceProtection" required>
+          <option disabled selected>Select</option>
+          <option>No internet service</option>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="TechSupport">Tech Support</label>
+        <select name="TechSupport" id="TechSupport" required>
+          <option disabled selected>Select</option>
+          <option>No internet service</option>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="StreamingTV">Streaming TV</label>
+        <select name="StreamingTV" id="StreamingTV" required>
+          <option disabled selected>Select</option>
+          <option>No internet service</option>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="StreamingMovies">Streaming Movies</label>
+        <select name="StreamingMovies" id="StreamingMovies" required>
+          <option disabled selected>Select</option>
+          <option>No internet service</option>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="Contract">Contract</label>
+        <select name="Contract" id="Contract" required>
+          <option disabled selected>Select</option>
+          <option>Month-to-month</option>
+          <option>One year</option>
+          <option>Two year</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="PaperlessBilling">Paperless Billing</label>
+        <select name="PaperlessBilling" id="PaperlessBilling" required>
+          <option disabled selected>Select</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="PaymentMethod">Payment Method</label>
+        <select name="PaymentMethod" id="PaymentMethod" required>
+          <option disabled selected>Select</option>
+          <option>Electronic check</option>
+          <option>Mailed check</option>
+          <option>Bank transfer (automatic)</option>
+          <option>Credit card (automatic)</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="MonthlyCharges">Monthly Charges</label>
+        <input type="number" step="0.01" name="MonthlyCharges" id="MonthlyCharges" required />
+      </div>
+
+      <div>
+        <label for="TotalCharges">Total Charges</label>
+        <input type="number" step="0.01" name="TotalCharges" id="TotalCharges" required />
+      </div>
+
+      <button type="submit">Predict Churn</button>
+    </form>
+
+    {% if prediction_text %}
+    <div style="margin-top:30px; background:#e7e7ff; padding:20px; border-radius:10px; text-align:center;">
+      <h3>{{ prediction_text }}</h3>
+      <h4>Your Input:</h4>
+      <ul style="list-style:none; padding-left:0;">
+        {% for key, value in data.items() %}
+          <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
