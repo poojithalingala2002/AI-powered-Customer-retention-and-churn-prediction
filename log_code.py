@@ -6,7 +6,7 @@ def setup_logging(script_name):
     if not logger.handlers:
         logger.setLevel(logging.DEBUG)
         # Create a file handler for the script
-        handler = logging.FileHandler(f'C:\\Users\\pooji\\Downloads\\Churn_Prediction\\logs{script_name}.log', mode='w')
+        handler = logging.FileHandler(f'C:\\Users\\pooji\\Downloads\\Churn_Prediction\\logs\\{script_name}.log', mode='w')
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         logger.addHandler(handler)
