@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<h1>🤖 AI_Powered-Customer-Retention-prediction-System</h1>
+<h1>🤖 AI_Powered-Customer-Retention and Churn-prediction-System</h1>
 
 <p>
 An <strong>end-to-end AI-driven Machine Learning system</strong> to predict
